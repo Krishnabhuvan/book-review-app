@@ -1,5 +1,3 @@
-# azure-pipelines-app.yaml
-
 trigger:
   branches:
     include:
@@ -12,8 +10,7 @@ stages:
       - job: App_Deployment
         displayName: "Run Ansible Playbook to Deploy App"
         pool:
-          name: "self-hosted-agent-pool"
-
+          name: "Default"
         steps:
           - script: |
               sudo apt update
@@ -33,8 +30,8 @@ stages:
             displayName: "Setup SSH Private Key"
 
           - script: |
-              cd ansible
               ansible-playbook -i inventory.ini site.yml --ssh-extra-args "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
             displayName: "Run Ansible Playbook"
+            workingDirectory: $(System.DefaultWorkingDirectory)/ansible
             env:
               ANSIBLE_HOST_KEY_CHECKING: "False"
